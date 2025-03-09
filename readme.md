@@ -12,3 +12,7 @@ An AI-powered web app that transforms your text into breathtaking images. Design
 
 ### ✨ User Interface  
 ![AI Image Generator](screenrecording.gif)  
+
+### ⚡ Example Output  
+**Prompt:** "superman"  
+![Generated Image](screenshot1.png)
