@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Generator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen relative">
+
+    <!-- Vanta.js Background -->
+    <div id="vanta-bg" class="absolute top-0 left-0 w-full h-full -z-10"></div>
+
+    <div class="w-full max-w-lg bg-white shadow-md rounded-lg p-6 relative">
+        <h1 class="text-2xl font-bold text-center mb-4">AI Image Generator</h1>
+        
+        <!-- Prompt Input -->
+        <div class="flex space-x-2">
+            <input type="text" id="prompt" class="w-full p-2 border rounded-md focus:ring focus:ring-blue-300" placeholder="Enter a prompt...">
+            
+            <!-- Slide Hover Button -->
+            <button onclick="generateImage()"
+                class="before:ease relative h-12 w-40 overflow-hidden border border-black shadow-2xl 
+                       before:absolute before:left-0 before:-ml-2 before:h-48 before:w-48 before:origin-top-right 
+                       before:-translate-x-full before:translate-y-12 before:-rotate-90 before:bg-gray-900 
+                       before:transition-all before:duration-300 hover:text-white hover:shadow-black hover:before:-rotate-180">
+                <span class="relative z-10">Generate</span>
+            </button>
+        </div>
+        
+
+        <!-- Loading Spinner -->
+        <div id="loading" class="text-center text-gray-500 mt-4 hidden">
+            <p>Generating Image...</p>
+        </div>
+
+        <!-- Image Display -->
+        <div id="image-container" class="mt-4 text-center"></div>
+
+        <!-- Error Message -->
+        <p id="error-message" class="text-red-500 text-center mt-4 hidden"></p>
+    </div>
+
+    <script>
+        async function generateImage() {
+            const prompt = document.getElementById("prompt").value;
+            const imageContainer = document.getElementById("image-container");
+            const loadingText = document.getElementById("loading");
+            const errorMessage = document.getElementById("error-message");
+
+            if (!prompt.trim()) {
+                errorMessage.textContent = "Please enter a valid prompt!";
+                errorMessage.classList.remove("hidden");
+                return;
+            }
+
+            errorMessage.classList.add("hidden");
+            imageContainer.innerHTML = "";
+            loadingText.classList.remove("hidden");
+
+            try {
+                const response = await fetch("/.netlify/functions/generate-image", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({ prompt }),
+});
+
+
+                const data = await response.json();
+                loadingText.classList.add("hidden");
+
+                if (data.imageUrl) {
+                    imageContainer.innerHTML = `<img src="${data.imageUrl}" class="mt-4 w-full rounded-md shadow-md" alt="Generated Image">`;
+                } else {
+                    throw new Error("No image returned!");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                loadingText.classList.add("hidden");
+                errorMessage.textContent = "Failed to generate image. Please try again!";
+                errorMessage.classList.remove("hidden");
+            }
+        }
+    </script>
+
+    <!-- Load Vanta.js Background -->
+    <script src="vanta-bg.js"></script>
+
+</body>
+</html>
