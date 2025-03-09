@@ -11,4 +11,4 @@ An AI-powered web app that transforms your text into breathtaking images. Design
 ## 📸 Showcase  
 
 ### ✨ User Interface  
-![AI Image Generator](.screenrecording)  
+![AI Image Generator](.screenrecording_compressed.mp4)  
